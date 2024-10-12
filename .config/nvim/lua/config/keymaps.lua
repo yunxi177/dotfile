@@ -57,7 +57,13 @@ keymap.set("n", "<C-w><left>", "<C-w><")
 keymap.set("n", "<C-w><right>", "<C-w>>")
 keymap.set("n", "<C-w><up>", "<C-w>+")
 keymap.set("n", "<C-w><down>", "<C-w>-")
-
+-- delete without overwrite p
+vim.keymap.set("n", "x", '"_d', { noremap = true })
+vim.keymap.set("v", "x", '"_d', { noremap = true })
+-- copy seelct content to system clipboard
+vim.keymap.set("v", "<C-c>", '"+y', { noremap = true, silent = true })
+-- auto improt php namespace
+vim.api.nvim_set_keymap("n", "<C-A-i>", "<cmd>lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
 -- Diagnostics
 keymap.set("n", "<C-j>", function()
 	vim.diagnostic.goto_next()

@@ -213,6 +213,8 @@ return {
 	},
 	{
 		"stevearc/conform.nvim",
+		lazy = true,
+		event = { "BufReadPre", "BufNewFile" },
 		opts = function()
 			---@type conform.setupOpts
 			local opts = {
@@ -222,11 +224,13 @@ return {
 					quiet = false, -- not recommended to change
 					lsp_format = "fallback", -- not recommended to change
 				},
+				notify_on_error = true,
 				formatters_by_ft = {
 					lua = { "stylua" },
 					fish = { "fish_indent" },
 					sh = { "shfmt" },
-					php = { "pint" },
+					--php = { "pint" },
+					php = { "php-cs-fixer" },
 					blade = { "blade-formatter", "rustywind" },
 					python = { "black" },
 					javascript = { "prettierd" },
@@ -258,6 +262,24 @@ return {
 							"vendor/bin/pint",
 						}, "pint"),
 						args = { "$FILENAME" },
+						stdin = false,
+					},
+					["php-cs-fixer"] = {
+						command = "php-cs-fixer",
+						args = {
+							"fix",
+							"--rules=@PSR12", -- Formatting preset. Other presets are available, see the php-cs-fixer docs.
+							"$FILENAME",
+						},
+						stdin = false,
+					},
+					php = {
+						command = "php-cs-fixer",
+						args = {
+							"fix",
+							"$FILENAME",
+							"--allow-risky=yes", -- if you have risky stuff in config, if not you dont need it.
+						},
 						stdin = false,
 					},
 				},
@@ -385,16 +407,6 @@ return {
 		},
 	},
 	{
-		"nvim-cmp",
-		opts = function(_, opts)
-			table.insert(opts.sources, 1, {
-				name = "copilot",
-				group_index = 2,
-				priority = 100,
-			})
-		end,
-	},
-	{
 		"mfussenegger/nvim-lint",
 		event = "LazyFile",
 		opts = {
@@ -449,5 +461,90 @@ return {
 		keys = {
 			{ "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
 		},
+	},
+	{
+		"echasnovski/mini.files",
+		keys = {
+			{
+				"<leader>e",
+				function()
+					require("mini.files").open(vim.api.nvim_buf_get_name(0), true)
+				end,
+				desc = "Open mini.files (directory of current file)",
+			},
+			{
+				"<leader>E",
+				function()
+					require("mini.files").open(vim.loop.cwd(), true)
+				end,
+				desc = "Open mini.files (cwd)",
+			},
+			{
+				"<leader>fm",
+				function()
+					require("mini.files").open(LazyVim.root(), true)
+				end,
+				desc = "Open mini.files (root)",
+			},
+		},
+		opts = {
+			mappings = {
+				go_in = "<CR>",
+				go_out = "<Backspace>",
+				go_in_plus = "<S-Right>",
+				go_out_plus = "<S-Left>",
+				go_in_vertical = "<C-V>",
+				go_in_horizontal = "<C-S>",
+				go_in_vertical_plus = "<C-V>",
+				go_in_horizontal_plus = "<C-S>",
+				toggle_hidden = ";.",
+				change_cwd = ";c",
+			},
+			windows = {
+				width_nofocus = 20,
+				width_focus = 50,
+				width_preview = 100,
+			},
+			options = {
+				use_as_default_explorer = true,
+			},
+		},
+	},
+	{
+		"mg979/vim-visual-multi",
+	},
+	{
+		"Exafunction/codeium.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"hrsh7th/nvim-cmp",
+		},
+		config = function()
+			require("codeium").setup({})
+		end,
+	},
+	{
+		"hrsh7th/nvim-cmp",
+		config = function()
+			local cmp = require("cmp")
+			cmp.setup({
+				mapping = cmp.mapping.preset.insert({
+					["<C-j>"] = cmp.mapping.select_next_item(), -- 使用 Ctrl+j 选择下一项
+					["<C-k>"] = cmp.mapping.select_prev_item(), -- 使用 Ctrl+k 选择上一项
+					["<C-b>"] = cmp.mapping.scroll_docs(-4), -- 向上滚动文档
+					["<C-f>"] = cmp.mapping.scroll_docs(4), -- 向下滚动文档
+					["<C-Space>"] = cmp.mapping.complete(), -- 手动触发补全
+					["<C-e>"] = cmp.mapping.abort(), -- 取消补全
+					["<CR>"] = cmp.mapping.confirm({ select = true }), -- 确认补全
+				}),
+				sources = cmp.config.sources({
+
+					{ name = "codeium" },
+					{ name = "buffer" },
+					{ name = "nvim_lsp" },
+					{ name = "vsnip" }, -- For vsnip users.
+				}),
+			})
+		end,
 	},
 }
