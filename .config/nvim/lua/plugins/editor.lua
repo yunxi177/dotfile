@@ -35,20 +35,6 @@ return {
 			},
 		},
 	},
-
-	{
-		"dinhhuy258/git.nvim",
-		event = "BufReadPre",
-		opts = {
-			keymaps = {
-				-- Open blame window
-				blame = "<Leader>gb",
-				-- Open file/folder in git repository
-				browse = "<Leader>go",
-			},
-		},
-	},
-
 	{
 		"telescope.nvim",
 		dependencies = {
@@ -466,14 +452,14 @@ return {
 		"echasnovski/mini.files",
 		keys = {
 			{
-				"<leader>e",
+				"<leader>E",
 				function()
 					require("mini.files").open(vim.api.nvim_buf_get_name(0), true)
 				end,
 				desc = "Open mini.files (directory of current file)",
 			},
 			{
-				"<leader>E",
+				"<leader>e",
 				function()
 					require("mini.files").open(vim.loop.cwd(), true)
 				end,
@@ -490,7 +476,7 @@ return {
 		opts = {
 			mappings = {
 				go_in = "<CR>",
-				go_out = "<Backspace>",
+				go_out = "<C-b>",
 				go_in_plus = "<S-Right>",
 				go_out_plus = "<S-Left>",
 				go_in_vertical = "<C-V>",
@@ -537,6 +523,24 @@ return {
 					["<C-e>"] = cmp.mapping.abort(), -- 取消补全
 					["<CR>"] = cmp.mapping.confirm({ select = true }), -- 确认补全
 				}),
+				window = {
+					completion = cmp.config.window.bordered(),
+					documentation = cmp.config.window.bordered({
+						placement = function(_, _)
+							-- 自动检测可用空间，如果上方没有足够空间，放置在下方
+							local wininfo = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
+							if wininfo.topline > 10 then
+								return "top"
+							else
+								return "bottom"
+							end
+						end,
+						max_height = 15,
+						max_width = 60,
+						col_offset = 0,
+						side_padding = 1,
+					}),
+				},
 				sources = cmp.config.sources({
 
 					{ name = "codeium" },
@@ -546,5 +550,8 @@ return {
 				}),
 			})
 		end,
+	},
+	{
+		"rhysd/git-messenger.vim",
 	},
 }

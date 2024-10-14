@@ -9,4 +9,9 @@ return {
 			}
 		end,
 	},
+	{
+		"rebelot/kanagawa.nvim",
+		lazy = true,
+		priority = 1000,
+	},
 }
