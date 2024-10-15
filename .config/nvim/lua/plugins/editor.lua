@@ -554,4 +554,6 @@ return {
 	{
 		"rhysd/git-messenger.vim",
 	},
+	{ "echasnovski/mini.comment", version = "*" },
+	{ "kevinhwang91/nvim-ufo" },
 }

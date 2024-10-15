@@ -20,7 +20,7 @@ config.font = wezterm.font("Fira Code")
 config.font_size = 14
 config.initial_cols = 140
 config.initial_rows = 35
-config.window_padding = { left = 0, right = 0, top = 0, bottom = "1cell" }
+config.window_padding = { left = 9, right = 0, top = 0, bottom = "1cell" }
 -- my coolnight colorscheme
 config.colors = {
 	foreground = "#CBE0F0",
