@@ -4,7 +4,15 @@
 
 local keymap = vim.keymap
 local opts = { noremap = true, silent = true }
+keymap.set(
+	"n",
+	"<leader>oa",
+	'<cmd>lua AiderOpen("--no-auto-commits --model openrouter/deepseek/deepseek-coder")<cr>',
+	{ noremap = true, silent = true }
+)
 
+keymap.set("n", "L", "g_", opts)
+keymap.set("n", "H", "^", opts)
 -- Do things without affecting the registers
 keymap.set("n", "x", '"_x')
 keymap.set("n", "<Leader>p", '"0p')
@@ -31,6 +39,7 @@ keymap.set("n", "<C-a>", "gg<S-v>G")
 
 -- Save with root permission (not working for now)
 --vim.api.nvim_create_user_command('W', 'w !sudo tee > /dev/null %', {})
+vim.keymap.set("n", "<leader>ld", "<cmd>LazyDocker<CR>", { desc = "Toggle LazyDocker", noremap = true, silent = true })
 
 -- Disable continuations
 keymap.set("n", "<Leader>o", "o<Esc>^Da", opts)

@@ -1,19 +1,19 @@
 local util = require("conform.util")
 return {
 	{
-		enabled = false,
 		"folke/flash.nvim",
+		event = "VeryLazy",
 		---@type Flash.Config
-		opts = {
-			search = {
-				forward = true,
-				multi_window = false,
-				wrap = false,
-				incremental = true,
-			},
-		},
+		opts = {},
+  -- stylua: ignore
+  keys = {
+    { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+    { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+    { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+    { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+    { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+  },
 	},
-
 	{
 		"echasnovski/mini.hipatterns",
 		event = "BufReadPre",
@@ -22,14 +22,14 @@ return {
 				hsl_color = {
 					pattern = "hsl%(%d+,? %d+%%?,? %d+%%?%)",
 					group = function(_, match)
-						local utils = require("solarized-osaka.hsl")
-						--- @type string, string, string
-						local nh, ns, nl = match:match("hsl%((%d+),? (%d+)%%?,? (%d+)%%?%)")
-						--- @type number?, number?, number?
-						local h, s, l = tonumber(nh), tonumber(ns), tonumber(nl)
-						--- @type string
-						local hex_color = utils.hslToHex(h, s, l)
-						return MiniHipatterns.compute_hex_color_group(hex_color, "bg")
+						-- local utils = require("solarized-osaka.hsl")
+						-- --- @type string, string, string
+						-- local nh, ns, nl = match:match("hsl%((%d+),? (%d+)%%?,? (%d+)%%?%)")
+						-- --- @type number?, number?, number?
+						-- local h, s, l = tonumber(nh), tonumber(ns), tonumber(nl)
+						-- --- @type string
+						-- local hex_color = utils.hslToHex(h, s, l)
+						-- return MiniHipatterns.compute_hex_color_group(hex_color, "bg")
 					end,
 				},
 			},
@@ -53,67 +53,6 @@ return {
 					})
 				end,
 				desc = "Find Plugin File",
-			},
-			{
-				";f",
-				function()
-					local builtin = require("telescope.builtin")
-					builtin.find_files({
-						no_ignore = false,
-						hidden = true,
-					})
-				end,
-				desc = "Lists files in your current working directory, respects .gitignore",
-			},
-			{
-				";r",
-				function()
-					local builtin = require("telescope.builtin")
-					builtin.live_grep({
-						additional_args = { "--hidden" },
-					})
-				end,
-				desc = "Search for a string in your current working directory and get results live as you type, respects .gitignore",
-			},
-			{
-				"\\\\",
-				function()
-					local builtin = require("telescope.builtin")
-					builtin.buffers()
-				end,
-				desc = "Lists open buffers",
-			},
-			{
-				";t",
-				function()
-					local builtin = require("telescope.builtin")
-					builtin.help_tags()
-				end,
-				desc = "Lists available help tags and opens a new window with the relevant help info on <cr>",
-			},
-			{
-				";;",
-				function()
-					local builtin = require("telescope.builtin")
-					builtin.resume()
-				end,
-				desc = "Resume the previous telescope picker",
-			},
-			{
-				";e",
-				function()
-					local builtin = require("telescope.builtin")
-					builtin.diagnostics()
-				end,
-				desc = "Lists Diagnostics for all open buffers or a specific buffer",
-			},
-			{
-				";s",
-				function()
-					local builtin = require("telescope.builtin")
-					builtin.treesitter()
-				end,
-				desc = "Lists Function names, variables, from Treesitter",
 			},
 			{
 				"sf",
@@ -556,4 +495,12 @@ return {
 	},
 	{ "echasnovski/mini.comment", version = "*" },
 	{ "kevinhwang91/nvim-ufo" },
+	{
+		"joshuavial/aider.nvim",
+		config = function()
+			require("aider").setup({
+				-- 这里可以添加具体配置参数
+			})
+		end,
+	},
 }

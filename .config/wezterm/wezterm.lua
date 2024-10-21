@@ -4,7 +4,7 @@ local config = wezterm.config_builder()
 
 -------------------- 颜色配置 --------------------
 config.color_scheme = "tokyonight_moon"
-config.window_decorations = "RESIZE"
+config.window_decorations = "TITLE|RESIZE"
 config.use_fancy_tab_bar = false
 config.enable_tab_bar = true
 config.show_tab_index_in_tab_bar = true
@@ -20,7 +20,7 @@ config.font = wezterm.font("Fira Code")
 config.font_size = 14
 config.initial_cols = 140
 config.initial_rows = 35
-config.window_padding = { left = 9, right = 0, top = 0, bottom = "1cell" }
+config.window_padding = { left = 10, right = 10, top = 0, bottom = 0 }
 -- my coolnight colorscheme
 config.colors = {
 	foreground = "#CBE0F0",
@@ -44,18 +44,51 @@ config.set_environment_variables = {
 -------------------- 键盘绑定 --------------------
 local act = wezterm.action
 
+local function resize_pane(key, direction)
+	return {
+		key = key,
+		action = wezterm.action.AdjustPaneSize({ direction, 3 }),
+	}
+end
+local projects = require("projects")
 config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
 config.keys = {
 	{ key = "q", mods = "LEADER", action = act.QuitApplication },
 
-	{ key = "h", mods = "LEADER", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
-	{ key = "v", mods = "LEADER", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
+	{ key = "'", mods = "LEADER", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+	{ key = "5", mods = "LEADER", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
+	{
+		key = "p",
+		mods = "LEADER",
+		-- Present in to our project picker
+		action = projects.choose_project(),
+	},
+	{
+		key = "f",
+		mods = "LEADER",
+		-- Present a list of existing workspaces
+		action = wezterm.action.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }),
+	},
+	{
+		-- When we push LEADER + R...
+		key = "r",
+		mods = "LEADER",
+		-- Activate the `resize_panes` keytable
+		action = wezterm.action.ActivateKeyTable({
+			name = "resize_panes",
+			-- Ensures the keytable stays active after it handles its
+			-- first keypress.
+			one_shot = false,
+			-- Deactivate the keytable after a timeout.
+			timeout_milliseconds = 1000,
+		}),
+	},
 	{ key = "q", mods = "CTRL", action = act.CloseCurrentPane({ confirm = false }) },
 
-	{ key = "{", mods = "SHIFT|CTRL", action = act.ActivatePaneDirection("Left") },
-	{ key = "}", mods = "SHIFT|CTRL", action = act.ActivatePaneDirection("Right") },
-	--	{ key = "k", mods = "SHIFT|CTRL", action = act.ActivatePaneDirection("Up") },
-	--	{ key = "j", mods = "SHIFT|CTRL", action = act.ActivatePaneDirection("Down") },
+	{ key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
+	{ key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
+	{ key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up") },
+	{ key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
 	-- F11 切换全屏
 	{ key = "F11", mods = "NONE", action = act.ToggleFullScreen },
 	-- Ctrl+Shift+C 复制选中区域
@@ -70,9 +103,16 @@ config.keys = {
 	-- CTRL + T 创建默认的Tab
 	{ key = "t", mods = "CTRL", action = act.SpawnTab("DefaultDomain") },
 	-- CTRL + W 关闭当前Tab
-	{ key = "w", mods = "CTRL", action = act.CloseCurrentTab({ confirm = false }) },
+	-- { key = "w", mods = "CTRL", action = act.CloseCurrentTab({ confirm = false }) },
 }
-
+config.key_tables = {
+	resize_panes = {
+		resize_pane("j", "Down"),
+		resize_pane("k", "Up"),
+		resize_pane("h", "Left"),
+		resize_pane("l", "Right"),
+	},
+}
 for i = 1, 8 do
 	-- CTRL + number to activate that tab
 	table.insert(config.keys, {
@@ -99,4 +139,59 @@ config.mouse_bindings = {
 	},
 }
 
+-- Replace the old wezterm.on('update-status', ... function with this:
+
+local function segments_for_right_status(window)
+	return {
+		window:active_workspace(),
+		wezterm.strftime("%a %b %-d %H:%M"),
+		-- wezterm.hostname(),
+	}
+end
+
+wezterm.on("update-status", function(window)
+	local SOLID_LEFT_ARROW = utf8.char(0xe0b2)
+	local segments = segments_for_right_status(window)
+
+	local color_scheme = window:effective_config().resolved_palette
+	-- Note the use of wezterm.color.parse here, this returns
+	-- a Color object, which comes with functionality for lightening
+	-- or darkening the colour (amongst other things).
+	local bg = wezterm.color.parse(color_scheme.background)
+	local fg = color_scheme.foreground
+
+	-- Each powerline segment is going to be coloured progressively
+	-- darker/lighter depending on whether we're on a dark/light colour
+	-- scheme. Let's establish the "from" and "to" bounds of our gradient.
+	local gradient_to, gradient_from = bg
+	gradient_from = gradient_to:lighten(0.2)
+
+	-- Yes, WezTerm supports creating gradients, because why not?! Although
+	-- they'd usually be used for setting high fidelity gradients on your terminal's
+	-- background, we'll use them here to give us a sample of the powerline segment
+	-- colours we need.
+	local gradient = wezterm.color.gradient(
+		{
+			orientation = "Horizontal",
+			colors = { gradient_from, gradient_to },
+		},
+		#segments -- only gives us as many colours as we have segments.
+	)
+
+	-- We'll build up the elements to send to wezterm.format in this table.
+	local elements = {}
+
+	for i, seg in ipairs(segments) do
+		local is_first = i == 1
+
+		table.insert(elements, { Foreground = { Color = gradient[i] } })
+		table.insert(elements, { Text = SOLID_LEFT_ARROW })
+
+		table.insert(elements, { Foreground = { Color = fg } })
+		table.insert(elements, { Background = { Color = gradient[i] } })
+		table.insert(elements, { Text = " " .. seg .. " " })
+	end
+
+	window:set_right_status(wezterm.format(elements))
+end)
 return config
