@@ -503,4 +503,16 @@ return {
 			})
 		end,
 	},
+
+	{
+		"windwp/nvim-autopairs", -- 按两次）可以跳出 （）
+		event = "InsertEnter",
+		config = true,
+		-- use opts = {} for passing setup options
+		-- this is equivalent to setup({}) function
+	},
+	{
+		"andymass/vim-matchup",
+		event = "BufReadPost",
+	},
 }

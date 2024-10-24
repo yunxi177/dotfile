@@ -32,7 +32,7 @@ keymap.set("n", "+", "<C-a>")
 keymap.set("n", "-", "<C-x>")
 
 -- Delete a word backwards
-keymap.set("n", "dw", 'vb"_d')
+--keymap.set("n", "dw", 'vb"_d')
 
 -- Select all
 keymap.set("n", "<C-a>", "gg<S-v>G")
@@ -69,7 +69,8 @@ keymap.set("n", "<C-w><down>", "<C-w>-")
 -- delete without overwrite p
 vim.keymap.set("n", "x", '"_d', { noremap = true })
 vim.keymap.set("v", "x", '"_d', { noremap = true })
--- copy seelct content to system clipboard
+
+-- leader + sc 复制选中内容到系统剪贴板
 vim.keymap.set("v", "<C-c>", '"+y', { noremap = true, silent = true })
 -- auto improt php namespace
 vim.api.nvim_set_keymap("n", "<C-A-i>", "<cmd>lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
