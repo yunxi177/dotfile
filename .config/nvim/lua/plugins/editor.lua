@@ -226,7 +226,14 @@ return {
 					},
 				},
 			}
-
+			-- setup 配置
+			opts.setup = {
+				clangd = function(_, opts)
+					local clangd_ext_opts = require("clangd_extensions").setup() or {}
+					require("clangd_extensions").setup(vim.tbl_deep_extend("force", clangd_ext_opts, { server = opts }))
+					return false
+				end,
+			}
 			-- vtsls 配置
 			opts.servers.vtsls = opts.servers.vtsls or {}
 			table.insert(opts.servers.vtsls.filetypes, "vue")
@@ -260,9 +267,86 @@ return {
 				},
 			}
 
+			opts.servers.rust_analyzer = {
+				mason = false,
+				cmd = { vim.fn.expand("~/.cargo/bin/rust-analyzer") },
+				settings = {
+					["rust-analyzer"] = {
+						imports = {
+							granularity = {
+								group = "module",
+							},
+							prefix = "self",
+						},
+						cargo = {
+							buildScripts = {
+								enable = true,
+							},
+						},
+						procMacro = {
+							enable = true,
+						},
+					},
+				},
+			}
+			opts.servers.clangd = {
+				keys = {
+					{ "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
+				},
+				root_dir = function(fname)
+					return require("lspconfig.util").root_pattern(
+						"Makefile",
+						"configure.ac",
+						"configure.in",
+						"config.h.in",
+						"meson.build",
+						"meson_options.txt",
+						"build.ninja"
+					)(fname) or require("lspconfig.util").root_pattern(
+						"compile_commands.json",
+						"compile_flags.txt"
+					)(fname) or require("lspconfig.util").find_git_ancestor(fname)
+				end,
+				capabilities = {
+					offsetEncoding = { "utf-16" },
+				},
+				cmd = {
+					"clangd",
+					"--background-index",
+					"--clang-tidy",
+					"--header-insertion=iwyu",
+					"--completion-style=detailed",
+					"--function-arg-placeholders",
+					"--fallback-style=llvm",
+				},
+				init_options = {
+					usePlaceholders = true,
+					completeUnimported = true,
+					clangdFileStatus = true,
+				},
+			}
+			opts.servers.taplo = {
+				keys = {
+					{
+						"K",
+						function()
+							if vim.fn.expand("%:t") == "Cargo.toml" and require("crates").popup_available() then
+								require("crates").show_popup()
+							else
+								vim.lsp.buf.hover()
+							end
+						end,
+						desc = "Show Crate Documentation",
+					},
+				},
+			}
 			-- intelephense 配置
 			opts.servers.intelephense = {
 				filetypes = { "php", "blade", "php_only" },
+				cmd = {
+					"/home/yunxi/.local/share/pnpm/global/5/node_modules/intelephense/lib/intelephense.js",
+					"--stdio",
+				}, -- 指定执行程序路径
 				settings = {
 					intelephense = {
 						filetypes = { "php", "blade", "php_only" },
@@ -274,53 +358,6 @@ return {
 				},
 			}
 		end,
-	},
-	{
-		"jay-babu/mason-nvim-dap.nvim",
-		dependencies = "mason.nvim",
-		cmd = { "DapInstall", "DapUninstall" },
-		opts = {
-			-- Makes a best effort to setup the various debuggers with
-			-- reasonable debug configurations
-			automatic_setup = true,
-			-- You can provide additional configuration to the handlers,
-			-- see mason-nvim-dap README for more information
-			handlers = {
-				function(config)
-					-- all sources with no handler get passed here
-
-					-- Keep original functionality
-					require("mason-nvim-dap").default_setup(config)
-				end,
-				php = function(config)
-					config.configurations = {
-						{
-							type = "php",
-							request = "launch",
-							name = "Listen for Xdebug",
-							port = 9003,
-							pathMappings = {
-								-- For some reason xdebug sometimes fails for me, depending on me
-								-- using herd or docker. To get it to work, change the order of the mappings.
-								-- The first mapping should be the one that you are actively using.
-								-- This only started recently, so I don't know what changed.
-								["${workspaceFolder}"] = "${workspaceFolder}",
-								["/var/www/html"] = "${workspaceFolder}",
-							},
-						},
-					}
-					require("mason-nvim-dap").default_setup(config) -- don't forget this!
-				end,
-			},
-			-- You'll need to check that you have the required things installed
-			-- online, please don't ask me how to install them :)
-			ensure_installed = {
-				-- Update this to ensure that you have the debuggers for the langs you want
-				"php",
-				"bash",
-				"python",
-			},
-		},
 	},
 	{
 		"williamboman/mason.nvim",
@@ -342,9 +379,9 @@ return {
 				"hadolint",
 				"html-lsp",
 				"intelephense",
-				"nginx-language-server",
 				"php-debug-adapter",
-				"phpstan",
+				"phpcs",
+				"php-cs-fixer",
 				"pint",
 				"prettierd",
 				"pyright",
@@ -365,6 +402,7 @@ return {
 			linters_by_ft = {
 				fish = { "fish" },
 				dockerfile = { "hadolint" },
+				php = { "phpstan" },
 				-- python = { "pylint" },
 				-- Use the "*" filetype to run linters on all filetypes.
 				-- ['*'] = { 'global linter' },
@@ -375,6 +413,21 @@ return {
 			-- or add custom linters.
 			---@type table<string,table>
 			linters = {
+				phpstan = {
+					cmd = "/home/yunxi/.config/composer/vendor/bin/phpstan",
+					args = {
+						"analyse",
+						"--memory-limit=2G",
+						"--level=0",
+						"--error-format=json",
+						"--no-progress",
+					},
+					stdin = false,
+					cwd = vim.fn.getcwd(),
+					on_exit = function(_, code, _, _)
+						print("PHPStan exited with code " .. code)
+					end,
+				},
 				-- -- Example of using selene only when a selene.toml file is present
 				-- selene = {
 				--   -- `condition` is another LazyVim extension that allows you to
@@ -506,7 +559,6 @@ return {
 					}),
 				},
 				sources = cmp.config.sources({
-
 					{ name = "codeium" },
 					{ name = "buffer" },
 					{ name = "nvim_lsp" },
@@ -514,14 +566,15 @@ return {
 				}),
 			})
 		end,
+		opts = function(_, opts)
+			table.insert(opts.sorting.comparators, 1, require("clangd_extensions.cmp_scores"))
+		end,
 	},
-	{
-		"rhysd/git-messenger.vim",
-	},
+	{ "rhysd/git-messenger.vim" },
 	{ "echasnovski/mini.comment", version = "*" },
 	{ "kevinhwang91/nvim-ufo" },
 	{
-		"joshuavial/aider.nvim",
+		"joshuavial/aider.nvim", --  结对编程 ai 工具
 		config = function()
 			require("aider").setup({
 				-- 这里可以添加具体配置参数
@@ -542,6 +595,29 @@ return {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
-		opts = { ensure_installed = { "vue", "css" } },
+		opts = { ensure_installed = { "vue", "css", "rust", "ron", "cpp" } },
+	},
+	{
+		"Saecki/crates.nvim",
+		event = { "BufRead Cargo.toml" },
+		opts = {
+			completion = {
+				cmp = { enabled = true },
+			},
+		},
+	},
+	{
+		"rust-lang/rust.vim",
+	},
+	{
+		"keaising/im-select.nvim",
+		opts = {
+			default_command = "/usr/bin/fcitx5-remote",
+			default_im_select = "keyboard-us",
+		},
+	},
+	{
+		"p00f/clangd_extensions.nvim",
+		lazy = true,
 	},
 }

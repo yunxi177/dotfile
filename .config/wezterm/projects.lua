@@ -1,13 +1,21 @@
 local wezterm = require("wezterm")
 local module = {}
-
+local project_path = { wezterm.home_dir .. "/project/company", wezterm.home_dir .. "/project/my" }
 local function project_dirs()
-	return {
-		"/home/yunxi/project/company/weiqing",
-		"/home/yunxi/project/my/admin/go-arco",
-		-- ... keep going, list all your projects
-		-- (or don't if you value your time. we'll improve on this soon)
-	}
+	-- Start with your home directory as a project, 'cause you might want
+	-- to jump straight to it sometimes.
+	local projects = {}
+
+	-- WezTerm comes with a glob function! Let's use it to get a lua table
+	-- containing all subdirectories of your project folder.
+	for _, project_dir in ipairs(project_path) do
+		for _, dir in ipairs(wezterm.glob(project_dir .. "/*")) do
+			-- ... and add them to the projects table.
+			table.insert(projects, dir)
+		end
+	end
+
+	return projects
 end
 
 function module.choose_project()

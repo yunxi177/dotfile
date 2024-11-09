@@ -48,4 +48,4 @@ if vim.fn.has("nvim-0.8") == 1 then
 end
 
 -- Set to "intelephense" to use intelephense instead of phpactor.
---vim.g.lazyvim_php_lsp = "intelephense"
+vim.g.lazyvim_php_lsp = "intelephense"

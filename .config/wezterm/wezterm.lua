@@ -4,7 +4,7 @@ local config = wezterm.config_builder()
 
 -------------------- 颜色配置 --------------------
 config.color_scheme = "tokyonight_moon"
-config.window_decorations = "TITLE|RESIZE"
+config.window_decorations = "NONE"
 config.use_fancy_tab_bar = false
 config.enable_tab_bar = true
 config.show_tab_index_in_tab_bar = true
@@ -96,9 +96,9 @@ config.keys = {
 	-- Ctrl+Shift+V 粘贴剪切板的内容
 	{ key = "V", mods = "SHIFT|CTRL", action = act.PasteFrom("Clipboard") },
 	-- Ctrl+Shift+PageUp 向上滚动一页
-	{ key = "PageUp", mods = "SHIFT|CTRL", action = act.ScrollByPage(-1) },
+	{ key = "PageUp", mods = "", action = act.ScrollByPage(-1) },
 	-- Ctrl+Shift+PageDown 向下滚动一页
-	{ key = "PageDown", mods = "SHIFT|CTRL", action = act.ScrollByPage(1) },
+	{ key = "PageDown", mods = "", action = act.ScrollByPage(1) },
 
 	-- CTRL + T 创建默认的Tab
 	{ key = "t", mods = "CTRL", action = act.SpawnTab("DefaultDomain") },

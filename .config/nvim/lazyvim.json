@@ -3,7 +3,8 @@
     "lazyvim.plugins.extras.coding.luasnip",
     "lazyvim.plugins.extras.coding.mini-comment",
     "lazyvim.plugins.extras.coding.neogen",
-    "lazyvim.plugins.extras.lang.go"
+    "lazyvim.plugins.extras.lang.go",
+    "lazyvim.plugins.extras.lsp.none-ls"
   ],
   "news": {
     "NEWS.md": "6520",
