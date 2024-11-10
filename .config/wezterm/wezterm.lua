@@ -16,7 +16,8 @@ config.inactive_pane_hsb = {
 }
 
 -- 设置字体和窗口大小
-config.font = wezterm.font("Fira Code")
+config.font = wezterm.font("Fira Code", { weight = "Regular" })
+
 config.font_size = 14
 config.initial_cols = 140
 config.initial_rows = 35
