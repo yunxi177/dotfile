@@ -16,11 +16,11 @@ config.inactive_pane_hsb = {
 }
 
 -- 设置字体和窗口大小
-config.font = wezterm.font("Fira Code", { weight = "Regular" })
+config.font = wezterm.font("FiraCode", { weight = "Regular" })
 
 config.font_size = 14
-config.initial_cols = 140
-config.initial_rows = 35
+config.initial_cols = 100
+config.initial_rows = 25
 config.window_padding = { left = 10, right = 10, top = 0, bottom = 0 }
 -- my coolnight colorscheme
 config.colors = {
@@ -36,6 +36,7 @@ config.colors = {
 }
 config.window_background_opacity = 0.9
 config.macos_window_background_blur = 80
+config.max_fps = 240
 
 -- 设置默认的启动shell
 config.set_environment_variables = {
