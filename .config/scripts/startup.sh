@@ -14,7 +14,7 @@ startup() {
     systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
     dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
     dbus-update-activation-environment --systemd --all
-    $HOME/scripts/wallpaper.sh
+    ~/.config/scripts/wallpaper.sh
     [ $1 ] && sleep $1
 }
 

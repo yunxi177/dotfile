@@ -493,9 +493,9 @@ return {
 		opts = {
 			mappings = {
 				go_in = "<CR>",
-				go_out = "<C-b>",
+				go_out = "<S-Left>",
 				go_in_plus = "<S-Right>",
-				go_out_plus = "<S-Left>",
+				go_out_plus = "<C-b>",
 				go_in_vertical = "<C-V>",
 				go_in_horizontal = "<C-S>",
 				go_in_vertical_plus = "<C-V>",
@@ -620,4 +620,13 @@ return {
 		"p00f/clangd_extensions.nvim",
 		lazy = true,
 	},
+	{
+		"rachartier/tiny-inline-diagnostic.nvim",
+		event = "VeryLazy", -- Or `LspAttach`
+		priority = 1000, -- needs to be loaded in first
+		config = function()
+			require("tiny-inline-diagnostic").setup()
+		end,
+	},
+	{ "tpope/vim-obsession" },
 }

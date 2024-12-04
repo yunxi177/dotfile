@@ -10,6 +10,7 @@ keymap.set(
 	'<cmd>lua AiderOpen("--no-auto-commits --model openrouter/deepseek/deepseek-coder")<cr>',
 	{ noremap = true, silent = true }
 )
+keymap.set("n", "<leader>ob", "<cmd>lua AiderBackground()<cr>", { noremap = true, silent = true })
 
 keymap.set("n", "L", "g_", opts)
 keymap.set("n", "H", "^", opts)
@@ -79,8 +80,4 @@ vim.api.nvim_set_keymap("n", "<C-A-i>", "<cmd>lua vim.lsp.buf.code_action()<CR>"
 
 keymap.set("n", "<leader>r", function()
 	require("craftzdog.hsl").replaceHexWithHSL()
-end)
-
-keymap.set("n", "<leader>i", function()
-	require("craftzdog.lsp").toggleInlayHints()
 end)

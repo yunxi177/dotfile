@@ -10,6 +10,7 @@ TERM = "alacritty"
 LANG = "en_US.UTF-8"
 
 [window]
+decorations = "None"
 opacity = 0.8
 title = "alacritty"
 padding = { x = 5, y = 5 }
@@ -26,8 +27,8 @@ normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }          # �
 bold = { family = "JetBrainsMono Nerd Font", style = "Bold" }               # 粗体
 italic = { family = "JetBrainsMono Nerd Font", style = "Italic" }           # 斜体
 bold_italic = { family = "JetBrainsMono Nerd Font", style = "Bold Italic" } # 粗体加斜体
-size = 16.0                                                             # 字体大小
-offset = { x = 0, y = 0 }                                               # 字符间隔
+size = 13                                                                   # 字体大小
+offset = { x = 0, y = 0 }                                                   # 字符间隔
 builtin_box_drawing = true
 
 [selection]
@@ -47,9 +48,9 @@ bindings = [{ mouse = "Right", mods = "Control", action = "Paste" }]
 
 [keyboard]
 bindings = [
-  { key = "Insert", mods = "Control", action = "Copy" },
-  { key = "Insert", mods = "Shift", action = "Paste" },
-  { key = "Home", mods = "Control", action = "IncreaseFontSize" },
-  { key = "End", mods = "Control", action = "DecreaseFontSize" },
-  { key = "Backspace", mods = "Control", action = "ResetFontSize" },
+    { key = "Insert", mods = "Control", action = "Copy" },
+    { key = "Insert", mods = "Shift", action = "Paste" },
+    { key = "Home", mods = "Control", action = "IncreaseFontSize" },
+    { key = "End", mods = "Control", action = "DecreaseFontSize" },
+    { key = "Backspace", mods = "Control", action = "ResetFontSize" },
 ]

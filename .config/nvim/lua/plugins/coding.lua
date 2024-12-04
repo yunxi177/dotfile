@@ -77,7 +77,16 @@ return {
 			})
 		end,
 	},
-
+	{
+		"jose-elias-alvarez/null-ls.nvim",
+		opts = function(_, opts)
+			local null_ls = require("null-ls")
+			opts.sources = {
+				null_ls.builtins.formatting.eslint_d, -- 使用 eslint_d 提高效率
+				null_ls.builtins.diagnostics.eslint, -- 启用 ESLint 的诊断
+			}
+		end,
+	},
 	{
 		"simrat39/symbols-outline.nvim",
 		keys = { { "<leader>cs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" } },
