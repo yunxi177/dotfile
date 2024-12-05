@@ -11,7 +11,7 @@ LANG = "en_US.UTF-8"
 
 [window]
 decorations = "None"
-opacity = 0.8
+opacity = 0.6
 title = "alacritty"
 padding = { x = 5, y = 5 }
 dynamic_title = true
