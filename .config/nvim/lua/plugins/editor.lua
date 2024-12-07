@@ -340,6 +340,13 @@ return {
 					},
 				},
 			}
+			opts.servers.gopls = {
+				settings = {
+					gopls = {
+						usePlaceholders = false,
+					},
+				},
+			}
 			-- intelephense 配置
 			opts.servers.intelephense = {
 				filetypes = { "php", "blade", "php_only" },
