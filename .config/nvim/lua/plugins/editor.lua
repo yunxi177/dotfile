@@ -226,14 +226,6 @@ return {
 					},
 				},
 			}
-			-- setup 配置
-			opts.setup = {
-				clangd = function(_, opts)
-					local clangd_ext_opts = require("clangd_extensions").setup() or {}
-					require("clangd_extensions").setup(vim.tbl_deep_extend("force", clangd_ext_opts, { server = opts }))
-					return false
-				end,
-			}
 			-- vtsls 配置
 			opts.servers.vtsls = opts.servers.vtsls or {}
 			table.insert(opts.servers.vtsls.filetypes, "vue")
@@ -323,6 +315,39 @@ return {
 					usePlaceholders = true,
 					completeUnimported = true,
 					clangdFileStatus = true,
+				},
+			}
+			-- python
+			-- setup 配置
+			-- opts.setup = {
+			-- 	clangd = function(_, opts)
+			-- 		local clangd_ext_opts = require("clangd_extensions").setup() or {}
+			-- 		require("clangd_extensions").setup(vim.tbl_deep_extend("force", clangd_ext_opts, { server = opts }))
+			-- 		return false
+			-- 	end,
+			-- }
+			opts.servers.ruff = {
+				cmd_env = { RUFF_TRACE = "messages" },
+				init_options = {
+					settings = {
+						logLevel = "error",
+					},
+				},
+				keys = {
+					{
+						"<leader>co",
+						LazyVim.lsp.action["source.organizeImports"],
+						desc = "Organize Imports",
+					},
+				},
+			}
+			opts.servers.ruff_lsp = {
+				keys = {
+					{
+						"<leader>co",
+						LazyVim.lsp.action["source.organizeImports"],
+						desc = "Organize Imports",
+					},
 				},
 			}
 			opts.servers.taplo = {
@@ -602,7 +627,7 @@ return {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
-		opts = { ensure_installed = { "vue", "css", "rust", "ron", "cpp" } },
+		opts = { ensure_installed = { "vue", "css", "rust", "ron", "cpp", "ninja", "rst" } },
 	},
 	{
 		"Saecki/crates.nvim",
@@ -636,4 +661,30 @@ return {
 		end,
 	},
 	{ "tpope/vim-obsession" },
+	{
+		"nvim-neotest/neotest-python",
+	},
+	{
+		"mfussenegger/nvim-dap-python",
+	},
+	{
+		"linux-cultist/venv-selector.nvim",
+		lazy = false,
+		dependencies = {
+			"neovim/nvim-lspconfig",
+			"mfussenegger/nvim-dap",
+			"mfussenegger/nvim-dap-python", --optional
+			-- { "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
+		},
+		branch = "regexp", -- This is the regexp branch, use this for the new version
+		config = function()
+			require("venv-selector").setup()
+		end,
+		keys = {
+			-- Keymap to open VenvSelector to pick a venv.
+			{ "<leader>vs", "<cmd>VenvSelect<cr>" },
+			-- Keymap to retrieve the venv from a cache (the one previously used for the same project directory).
+			{ "<leader>vc", "<cmd>VenvSelectCached<cr>" },
+		},
+	},
 }
