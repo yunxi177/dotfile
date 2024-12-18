@@ -36,105 +36,64 @@ return {
 		},
 	},
 	{
-		"telescope.nvim",
-		dependencies = {
-			{
-				"nvim-telescope/telescope-fzf-native.nvim",
-				build = "make",
-			},
-			"nvim-telescope/telescope-file-browser.nvim",
-		},
-		keys = {
-			{
-				"<leader>fP",
-				function()
-					require("telescope.builtin").find_files({
-						cwd = require("lazy.core.config").options.root,
-					})
-				end,
-				desc = "Find Plugin File",
-			},
-			{
-				"sf",
-				function()
-					local telescope = require("telescope")
+		"saghen/blink.cmp",
+		lazy = false, -- lazy loading handled internally
+		-- optional: provides snippets for the snippet source
+		dependencies = "rafamadriz/friendly-snippets",
 
-					local function telescope_buffer_dir()
-						return vim.fn.expand("%:p:h")
-					end
+		-- use a release tag to download pre-built binaries
+		version = "v0.*",
+		-- OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
+		-- build = 'cargo build --release',
+		-- If you use nix, you can build from source using latest nightly rust with:
+		-- build = 'nix run .#build-plugin',
 
-					telescope.extensions.file_browser.file_browser({
-						path = "%:p:h",
-						cwd = telescope_buffer_dir(),
-						respect_gitignore = false,
-						hidden = true,
-						grouped = true,
-						previewer = false,
-						initial_mode = "normal",
-						layout_config = { height = 40 },
-					})
-				end,
-				desc = "Open File Browser with the path of the current buffer",
+		---@module 'blink.cmp'
+		---@type blink.cmp.Config
+		opts = {
+			-- 'default' for mappings similar to built-in completion
+			-- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
+			-- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
+			-- see the "default configuration" section below for full documentation on how to define
+			-- your own keymap.
+			keymap = {
+				preset = "default",
+				["<C-k>"] = { "select_prev", "fallback" },
+				["<C-j>"] = { "select_next", "fallback" },
 			},
-		},
-		config = function(_, opts)
-			local telescope = require("telescope")
-			local actions = require("telescope.actions")
-			local fb_actions = require("telescope").extensions.file_browser.actions
 
-			opts.defaults = vim.tbl_deep_extend("force", opts.defaults, {
-				wrap_results = true,
-				layout_strategy = "horizontal",
-				layout_config = { prompt_position = "top" },
-				sorting_strategy = "ascending",
-				winblend = 0,
-				mappings = {
-					n = {},
-				},
-			})
-			opts.pickers = {
-				diagnostics = {
-					theme = "ivy",
-					initial_mode = "normal",
-					layout_config = {
-						preview_cutoff = 9999,
+			appearance = {
+				-- Sets the fallback highlight groups to nvim-cmp's highlight groups
+				-- Useful for when your theme doesn't support blink.cmp
+				-- will be removed in a future release
+				use_nvim_cmp_as_default = true,
+				-- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+				-- Adjusts spacing to ensure icons are aligned
+				nerd_font_variant = "mono",
+			},
+
+			-- default list of enabled providers defined so that you can extend it
+			-- elsewhere in your config, without redefining it, via `opts_extend`
+			sources = {
+				compat = { "codeium" },
+				default = { "lsp", "path", "snippets", "buffer", "codeium" },
+				providers = {
+					codeium = {
+						kind = "Codeium",
+						score_offset = 100,
+						async = true,
 					},
 				},
-			}
-			opts.extensions = {
-				file_browser = {
-					theme = "dropdown",
-					-- disables netrw and use telescope-file-browser in its place
-					hijack_netrw = true,
-					mappings = {
-						-- your custom insert mode mappings
-						["n"] = {
-							-- your custom normal mode mappings
-							["N"] = fb_actions.create,
-							["h"] = fb_actions.goto_parent_dir,
-							["/"] = function()
-								vim.cmd("startinsert")
-							end,
-							["<C-u>"] = function(prompt_bufnr)
-								for i = 1, 10 do
-									actions.move_selection_previous(prompt_bufnr)
-								end
-							end,
-							["<C-d>"] = function(prompt_bufnr)
-								for i = 1, 10 do
-									actions.move_selection_next(prompt_bufnr)
-								end
-							end,
-							["<PageUp>"] = actions.preview_scrolling_up,
-							["<PageDown>"] = actions.preview_scrolling_down,
-						},
-					},
-				},
-			}
-			telescope.setup(opts)
-			require("telescope").load_extension("fzf")
-			require("telescope").load_extension("file_browser")
-		end,
+				-- optionally disable cmdline completions
+				-- cmdline = {},
+			},
+
+			-- experimental signature help support
+			-- signature = { enabled = true }
+		},
+		-- allows extending the providers array elsewhere in your config
+		-- without having to redefine it
+		opts_extend = { "sources.default" },
 	},
 	{
 		"stevearc/conform.nvim",
@@ -226,14 +185,6 @@ return {
 					},
 				},
 			}
-			-- setup 配置
-			opts.setup = {
-				clangd = function(_, opts)
-					local clangd_ext_opts = require("clangd_extensions").setup() or {}
-					require("clangd_extensions").setup(vim.tbl_deep_extend("force", clangd_ext_opts, { server = opts }))
-					return false
-				end,
-			}
 			-- vtsls 配置
 			opts.servers.vtsls = opts.servers.vtsls or {}
 			table.insert(opts.servers.vtsls.filetypes, "vue")
@@ -323,6 +274,39 @@ return {
 					usePlaceholders = true,
 					completeUnimported = true,
 					clangdFileStatus = true,
+				},
+			}
+			-- python
+			-- setup 配置
+			-- opts.setup = {
+			-- 	clangd = function(_, opts)
+			-- 		local clangd_ext_opts = require("clangd_extensions").setup() or {}
+			-- 		require("clangd_extensions").setup(vim.tbl_deep_extend("force", clangd_ext_opts, { server = opts }))
+			-- 		return false
+			-- 	end,
+			-- }
+			opts.servers.ruff = {
+				cmd_env = { RUFF_TRACE = "messages" },
+				init_options = {
+					settings = {
+						logLevel = "error",
+					},
+				},
+				keys = {
+					{
+						"<leader>co",
+						LazyVim.lsp.action["source.organizeImports"],
+						desc = "Organize Imports",
+					},
+				},
+			}
+			opts.servers.ruff_lsp = {
+				keys = {
+					{
+						"<leader>co",
+						LazyVim.lsp.action["source.organizeImports"],
+						desc = "Organize Imports",
+					},
 				},
 			}
 			opts.servers.taplo = {
@@ -533,50 +517,6 @@ return {
 			require("codeium").setup({})
 		end,
 	},
-	{
-		"hrsh7th/nvim-cmp",
-		config = function()
-			local cmp = require("cmp")
-			cmp.setup({
-				mapping = cmp.mapping.preset.insert({
-					["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), -- 使用 Ctrl+j 选择下一项
-					["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), -- 使用 Ctrl+k 选择上一项
-					["<C-b>"] = cmp.mapping.scroll_docs(-4), -- 向上滚动文档
-					["<C-f>"] = cmp.mapping.scroll_docs(4), -- 向下滚动文档
-					["<C-Space>"] = cmp.mapping.complete(), -- 手动触发补全
-					["<C-e>"] = cmp.mapping.abort(), -- 取消补全
-					["<CR>"] = cmp.mapping.confirm({ select = true }), -- 确认补全
-				}),
-				window = {
-					completion = cmp.config.window.bordered(),
-					documentation = cmp.config.window.bordered({
-						placement = function(_, _)
-							-- 自动检测可用空间，如果上方没有足够空间，放置在下方
-							local wininfo = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
-							if wininfo.topline > 10 then
-								return "top"
-							else
-								return "bottom"
-							end
-						end,
-						max_height = 15,
-						max_width = 60,
-						col_offset = 0,
-						side_padding = 1,
-					}),
-				},
-				sources = cmp.config.sources({
-					{ name = "codeium" },
-					{ name = "buffer" },
-					{ name = "nvim_lsp" },
-					{ name = "vsnip" }, -- For vsnip users.
-				}),
-			})
-		end,
-		opts = function(_, opts)
-			table.insert(opts.sorting.comparators, 1, require("clangd_extensions.cmp_scores"))
-		end,
-	},
 	{ "rhysd/git-messenger.vim" },
 	{ "echasnovski/mini.comment", version = "*" },
 	{ "kevinhwang91/nvim-ufo" },
@@ -602,7 +542,7 @@ return {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
-		opts = { ensure_installed = { "vue", "css", "rust", "ron", "cpp" } },
+		opts = { ensure_installed = { "vue", "css", "rust", "ron", "cpp", "ninja", "rst" } },
 	},
 	{
 		"Saecki/crates.nvim",
@@ -636,4 +576,30 @@ return {
 		end,
 	},
 	{ "tpope/vim-obsession" },
+	{
+		"nvim-neotest/neotest-python",
+	},
+	{
+		"mfussenegger/nvim-dap-python",
+	},
+	{
+		"linux-cultist/venv-selector.nvim",
+		lazy = false,
+		dependencies = {
+			"neovim/nvim-lspconfig",
+			"mfussenegger/nvim-dap",
+			"mfussenegger/nvim-dap-python", --optional
+			-- { "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
+		},
+		branch = "regexp", -- This is the regexp branch, use this for the new version
+		config = function()
+			require("venv-selector").setup()
+		end,
+		keys = {
+			-- Keymap to open VenvSelector to pick a venv.
+			{ "<leader>vs", "<cmd>VenvSelect<cr>" },
+			-- Keymap to retrieve the venv from a cache (the one previously used for the same project directory).
+			{ "<leader>vc", "<cmd>VenvSelectCached<cr>" },
+		},
+	},
 }
