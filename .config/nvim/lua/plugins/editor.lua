@@ -47,8 +47,6 @@ return {
 		-- If you use nix, you can build from source using latest nightly rust with:
 		-- build = 'nix run .#build-plugin',
 
-		---@module 'blink.cmp'
-		---@type blink.cmp.Config
 		opts = {
 			-- 'default' for mappings similar to built-in completion
 			-- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
@@ -59,6 +57,7 @@ return {
 				preset = "default",
 				["<C-k>"] = { "select_prev", "fallback" },
 				["<C-j>"] = { "select_next", "fallback" },
+				["<CR>"] = { "select_and_accept", "fallback" },
 			},
 
 			appearance = {
