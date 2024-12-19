@@ -204,10 +204,6 @@ return {
 		event = "BufReadPost",
 	},
 	{
-		"nvim-treesitter/nvim-treesitter",
-		opts = { ensure_installed = { "vue", "css", "rust", "ron", "cpp", "ninja", "rst" } },
-	},
-	{
 		"Saecki/crates.nvim",
 		event = { "BufRead Cargo.toml" },
 		opts = {
