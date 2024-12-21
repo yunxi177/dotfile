@@ -7,7 +7,6 @@ return {
 	},
 	{
 		"linux-cultist/venv-selector.nvim",
-		lazy = false,
 		dependencies = {
 			"neovim/nvim-lspconfig",
 			"mfussenegger/nvim-dap",
