@@ -80,7 +80,7 @@ return {
 		priority = 800,
 		dependencies = { "mfussenegger/nvim-dap" },
 		config = function()
-			require("nvim-dap-virtual-text").setup()
+			require("nvim-dap-virtual-text").setup({})
 		end,
 	},
 
