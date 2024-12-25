@@ -63,8 +63,8 @@ return {
 			-- your own keymap.
 			keymap = {
 				preset = "default",
-				["<C-k>"] = { "select_prev", "fallback" },
-				["<C-j>"] = { "select_next", "fallback" },
+				["<C-k>"] = { "select_prev", "snippet_backward", "fallback" },
+				["<C-j>"] = { "select_next", "snippet_forward", "fallback" },
 				["<CR>"] = { "select_and_accept", "fallback" },
 			},
 			snippets = {
