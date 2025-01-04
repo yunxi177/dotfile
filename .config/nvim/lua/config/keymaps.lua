@@ -11,7 +11,13 @@ keymap.set(
 	{ noremap = true, silent = true }
 )
 keymap.set("n", "<leader>ob", "<cmd>lua AiderBackground()<cr>", { noremap = true, silent = true })
-
+-- 生成注释
+keymap.set("n", "<Leader>nf", ":lua require('neogen').generate()<CR>", opts)
+keymap.set("n", "<Leader>nc", ":lua require('neogen').generate({ type = 'class' })<CR>", opts)
+keymap.set("i", "<C-l>", ":lua require('neogen').jump_next<CR>", opts)
+keymap.set("i", "<C-h>", ":lua require('neogen').jump_prev<CR>", opts)
+-- 关闭所有 buffer
+keymap.set("n", "<C-q>", ":q<CR>", { noremap = true, silent = true })
 keymap.set("n", "L", "g_", opts)
 keymap.set("n", "H", "^", opts)
 -- Do things without affecting the registers
@@ -90,9 +96,6 @@ vim.keymap.set("v", "x", '"_d', { noremap = true })
 -- leader + sc 复制选中内容到系统剪贴板
 vim.keymap.set("v", "<C-c>", '"+y', { noremap = true, silent = true })
 vim.keymap.set("n", "yu", '"+yy', { noremap = true, silent = true })
-
--- auto improt php namespace
-vim.api.nvim_set_keymap("n", "<C-A-i>", "<cmd>lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
 
 keymap.set("n", "<leader>r", function()
 	require("craftzdog.hsl").replaceHexWithHSL()
