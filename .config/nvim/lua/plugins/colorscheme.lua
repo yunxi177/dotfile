@@ -13,8 +13,8 @@ return {
 		"sainnhe/gruvbox-material",
 		priority = 1000, -- 确保此主题的加载优先级高于其他插件
 		config = function()
-			vim.g.gruvbox_material_transparent_background = 2
-			vim.g.gruvbox_material_background = "soft"
+			vim.g.gruvbox_material_transparent_background = 1
+			vim.g.gruvbox_material_background = "medium"
 		end,
 	},
 	{
