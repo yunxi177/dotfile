@@ -46,7 +46,12 @@ return {
 	{
 		"saghen/blink.cmp",
 		-- optional: provides snippets for the snippet source
-		dependencies = { "L3MON4D3/LuaSnip", version = "v2.*" },
+		dependencies = {
+			"codeium.nvim",
+			"saghen/blink.compat",
+			{ "L3MON4D3/LuaSnip", version = "v2.*" },
+			"xzbdmw/colorful-menu.nvim",
+		},
 
 		-- use a release tag to download pre-built binaries
 		version = "v0.*",
@@ -56,6 +61,7 @@ return {
 		-- build = 'nix run .#build-plugin',
 
 		opts = {
+
 			-- 'default' for mappings similar to built-in completion
 			-- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
 			-- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
@@ -68,6 +74,7 @@ return {
 				["<CR>"] = { "select_and_accept", "fallback" },
 			},
 			snippets = {
+				preset = "luasnip",
 				expand = function(snippet)
 					require("luasnip").lsp_expand(snippet)
 				end,
@@ -91,12 +98,47 @@ return {
 				-- Adjusts spacing to ensure icons are aligned
 				nerd_font_variant = "mono",
 			},
+			completion = {
+				menu = {
+					draw = {
+						-- We don't need label_description now because label and label_description are already
+						-- conbined together in label by colorful-menu.nvim.
+						columns = { { "kind_icon" }, { "label", gap = 1 } },
+						components = {
+							label = {
+								width = { fill = true, max = 60 },
+								text = function(ctx)
+									local highlights_info = require("colorful-menu").blink_highlights(ctx)
+									if highlights_info ~= nil then
+										-- Or you want to add more item to label
+										return highlights_info.label
+									else
+										return ctx.label
+									end
+								end,
+								highlight = function(ctx)
+									local highlights = {}
+									local highlights_info = require("colorful-menu").blink_highlights(ctx)
+									if highlights_info ~= nil then
+										highlights = highlights_info.highlights
+									end
+									for _, idx in ipairs(ctx.label_matched_indices) do
+										table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
+									end
+									-- Do something else
+									return highlights
+								end,
+							},
+						},
+					},
+				},
+			},
 
 			-- default list of enabled providers defined so that you can extend it
 			-- elsewhere in your config, without redefining it, via `opts_extend`
 			sources = {
 				compat = { "codeium" },
-				default = { "lsp", "path", "snippets", "buffer", "codeium", "luasnip" },
+				default = { "lsp", "path", "snippets", "buffer", "codeium" },
 				providers = {
 					codeium = {
 						kind = "Codeium",
@@ -107,46 +149,6 @@ return {
 				-- optionally disable cmdline completions
 				-- cmdline = {},
 			},
-			completion = {
-
-				menu = {
-					draw = {
-						components = {
-							label = {
-								width = { fill = true, max = 60 },
-								text = function(ctx)
-									local highlights_info =
-										require("colorful-menu").highlights(ctx.item, vim.bo.filetype)
-									if highlights_info ~= nil then
-										return highlights_info.text
-									else
-										return ctx.label
-									end
-								end,
-								highlight = function(ctx)
-									local highlights_info =
-										require("colorful-menu").highlights(ctx.item, vim.bo.filetype)
-									local highlights = {}
-									if highlights_info ~= nil then
-										for _, info in ipairs(highlights_info.highlights) do
-											table.insert(highlights, {
-												info.range[1],
-												info.range[2],
-												group = ctx.deprecated and "BlinkCmpLabelDeprecated" or info[1],
-											})
-										end
-									end
-									for _, idx in ipairs(ctx.label_matched_indices) do
-										table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
-									end
-									return highlights
-								end,
-							},
-						},
-					},
-				},
-			},
-
 			-- experimental signature help support
 			-- signature = { enabled = true }
 		},
@@ -159,24 +161,41 @@ return {
 		config = function()
 			-- You don't need to set these options.
 			require("colorful-menu").setup({
-				ft = {
-					lua = {
+				ls = {
+					lua_ls = {
 						-- Maybe you want to dim arguments a bit.
-						auguments_hl = "@comment",
+						arguments_hl = "@comment",
 					},
-					typescript = {
-						-- Or "vtsls", their information is different, so we
-						-- need to know in advance.
-						ls = "typescript-language-server",
+					gopls = {
+						-- When true, label for field and variable will format like "foo: Foo"
+						-- instead of go's original syntax "foo Foo".
+						add_colon_before_type = false,
 					},
-					rust = {
-						-- such as (as Iterator), (use std::io).
+					-- for lsp_config or typescript-tools
+					ts_ls = {
 						extra_info_hl = "@comment",
 					},
-					c = {
-						-- such as "From <stdio.h>"
+					vtsls = {
 						extra_info_hl = "@comment",
 					},
+					["rust-analyzer"] = {
+						-- Such as (as Iterator), (use std::io).
+						extra_info_hl = "@comment",
+					},
+					clangd = {
+						-- Such as "From <stdio.h>".
+						extra_info_hl = "@comment",
+					},
+					roslyn = {
+						extra_info_hl = "@comment",
+					},
+					basedpyright = {
+						-- It is usually import path such as "os"
+						extra_info_hl = "@comment",
+					},
+
+					-- If true, try to highlight "not supported" languages.
+					fallback = true,
 				},
 				-- If the built-in logic fails to find a suitable highlight group,
 				-- this highlight is applied to the label.
@@ -283,12 +302,14 @@ return {
 	},
 	{
 		"Exafunction/codeium.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"hrsh7th/nvim-cmp",
-		},
-		config = function()
-			require("codeium").setup({})
+		opts = function()
+			LazyVim.cmp.actions.ai_accept = function()
+				if require("codeium.virtual_text").get_current_completion_item() then
+					LazyVim.create_undo()
+					vim.api.nvim_input(require("codeium.virtual_text").accept())
+					return true
+				end
+			end
 		end,
 	},
 	{ "rhysd/git-messenger.vim" },

@@ -1,0 +1,13 @@
+command = /usr/bin/fish
+font-family = "JetBrainsMono Nerd Font"
+#custom-shader = shaders/glow.glsl
+term = xterm-256color
+theme = ayu
+cursor-style = block
+#cursor-style-blink = false
+shell-integration-features = no-cursor
+window-decoration = false
+background-opacity = 0.7
+background-blur-radius = 20
+
+
