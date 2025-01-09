@@ -289,6 +289,8 @@ return {
 			-- vim.schedule(function()
 			vim.g.VM_maps = {
 				["I BS"] = "",
+				["Add Cursor Down"] = "<M-J>",
+				["Add Cursor Up"] = "<M-K>",
 				["Goto Next"] = "]v",
 				["Goto Prev"] = "[v",
 				["I CtrlB"] = "<M-b>",
