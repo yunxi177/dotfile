@@ -388,4 +388,10 @@ return {
 			},
 		},
 	},
+	{
+		"sindrets/diffview.nvim",
+		config = function()
+			vim.keymap.set("n", "<leader>df", ":DiffviewFileHistory %<CR>", { noremap = true, silent = true })
+		end,
+	},
 }

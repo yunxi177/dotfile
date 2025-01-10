@@ -10,7 +10,7 @@ keymap.set(
 	":AiderOpen --no-auto-commits --model openrouter/meta-llama/llama-3-8b-instruct:free<CR>",
 	{ noremap = true, silent = true }
 )
-keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true, silent = true })
+-- keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true, silent = true })
 -- 生成注释
 keymap.set("n", "<Leader>nf", ":lua require('neogen').generate()<CR>", opts)
 keymap.set("n", "<Leader>nc", ":lua require('neogen').generate({ type = 'class' })<CR>", opts)
@@ -72,7 +72,8 @@ keymap.set("n", "<Leader>O", "O<Esc>^Da", opts)
 keymap.set("n", "<C-m>", "<C-i>", opts)
 
 -- New tab
-keymap.set("n", "te", ":tabedit")
+keymap.set("n", "te", ":tabedit <CR>")
+keymap.set("n", "tw", ":tabclose <CR>")
 keymap.set("n", "<tab>", ":tabnext<Return>", opts)
 keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
 -- Split window
