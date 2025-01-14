@@ -5,10 +5,12 @@ term = xterm-256color
 theme = ayu
 cursor-style = block
 #cursor-style-blink = false
+shell-integration=fish
 shell-integration-features = no-cursor
 window-decoration = false
 background-opacity = 0.7
 background-blur-radius = 20
+confirm-close-surface = false
 
 keybind = super+r=reload_config
 
