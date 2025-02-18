@@ -9,26 +9,78 @@ return {
 			-- 保留现有的 servers 配置
 			opts.servers = opts.servers or {}
 
-			-- volar 配置
+			local mason_registry = require("mason-registry")
+			local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
+				.. "/node_modules/@vue/language-server"
+			-- -- volar 配置
 			opts.servers.volar = {
+				-- filetypes = { "vue", "javascript", "typescript", "javascriptreact", "typescriptreact" },
+				-- init_options = {
+				-- 	vue = {
+				-- 		hybridMode = false,
+				-- 	},
+				-- },
+			}
+			-- -- ts 配置
+			opts.servers.ts_ls = {
+				filetypes = { "javascript", "typescript", "vue" },
 				init_options = {
-					vue = {
-						hybridMode = true,
+					plugins = {
+						{
+							name = "@vue/typescript-plugin",
+							-- location = vue_language_server_path,
+							location = "/home/yunxi/.local/share/pnpm/global/5/node_modules/@vue/typescript-plugin",
+							languages = { "vue", "javascript", "typescript" },
+						},
 					},
 				},
 			}
 			-- vtsls 配置
-			opts.servers.vtsls = opts.servers.vtsls or {}
-			table.insert(opts.servers.vtsls.filetypes, "vue")
-			LazyVim.extend(opts.servers.vtsls, "settings.vtsls.tsserver.globalPlugins", {
-				{
-					name = "@vue/typescript-plugin",
-					location = LazyVim.get_pkg_path("vue-language-server", "/node_modules/@vue/language-server"),
-					languages = { "vue" },
-					configNamespace = "typescript",
-					enableForWorkspaceTypeScriptVersions = true,
+			-- opts.servers.vtsls = {
+			-- 	filetypes = { "vue" },
+			-- }
+			-- table.insert(opts.servers.vtsls.filetypes, "vue")
+			-- LazyVim.extend(opts.servers.vtsls, "settings.vtsls.tsserver.globalPlugins", {
+			-- 	{
+			-- 		name = "@vue/typescript-plugin",
+			-- 		location = LazyVim.get_pkg_path("vue-language-server", "/node_modules/@vue/language-server"),
+			-- 		languages = { "vue" },
+			-- 		configNamespace = "typescript",
+			-- 		enableForWorkspaceTypeScriptVersions = true,
+			-- 	},
+			-- })
+
+			--eslint
+			opts.servers.eslint = {
+				filetypes = {
+					"javascript",
+					"javascriptreact",
+					"javascript.jsx",
+					"typescript",
+					"typescriptreact",
+					"typescript.tsx",
+					"vue",
+					"html",
+					"markdown",
+					"json",
+					"jsonc",
+					"yaml",
+					"toml",
+					"xml",
+					"gql",
+					"graphql",
+					"astro",
+					"svelte",
+					"css",
+					"less",
+					"scss",
+					"pcss",
+					"postcss",
 				},
-			})
+				settings = {
+					rulesCustomizations = customizations,
+				},
+			}
 
 			-- emmet_ls 配置
 			opts.servers.emmet_ls = {
@@ -169,6 +221,7 @@ return {
 				"php-debug-adapter",
 				"phpcs",
 				"php-cs-fixer",
+				"vue-language-server",
 				"pint",
 				"prettierd",
 				"pyright",
@@ -177,6 +230,7 @@ return {
 				"shfmt",
 				"stylua",
 				"tailwindcss-language-server",
+				"typescript-language-server",
 			},
 		},
 	},

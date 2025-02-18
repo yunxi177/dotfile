@@ -99,39 +99,10 @@ return {
 				nerd_font_variant = "mono",
 			},
 			completion = {
-				menu = {
-					draw = {
-						-- We don't need label_description now because label and label_description are already
-						-- conbined together in label by colorful-menu.nvim.
-						columns = { { "kind_icon" }, { "label", gap = 1 } },
-						components = {
-							label = {
-								width = { fill = true, max = 60 },
-								text = function(ctx)
-									local highlights_info = require("colorful-menu").blink_highlights(ctx)
-									if highlights_info ~= nil then
-										-- Or you want to add more item to label
-										return highlights_info.label
-									else
-										return ctx.label
-									end
-								end,
-								highlight = function(ctx)
-									local highlights = {}
-									local highlights_info = require("colorful-menu").blink_highlights(ctx)
-									if highlights_info ~= nil then
-										highlights = highlights_info.highlights
-									end
-									for _, idx in ipairs(ctx.label_matched_indices) do
-										table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
-									end
-									-- Do something else
-									return highlights
-								end,
-							},
-						},
-					},
+				list = {
+					selection = { preselect = true, auto_insert = false },
 				},
+				ghost_text = { enabled = true },
 			},
 
 			-- default list of enabled providers defined so that you can extend it
@@ -155,57 +126,6 @@ return {
 		-- allows extending the providers array elsewhere in your config
 		-- without having to redefine it
 		opts_extend = { "sources.default" },
-	},
-	{
-		"xzbdmw/colorful-menu.nvim",
-		config = function()
-			-- You don't need to set these options.
-			require("colorful-menu").setup({
-				ls = {
-					lua_ls = {
-						-- Maybe you want to dim arguments a bit.
-						arguments_hl = "@comment",
-					},
-					gopls = {
-						-- When true, label for field and variable will format like "foo: Foo"
-						-- instead of go's original syntax "foo Foo".
-						add_colon_before_type = false,
-					},
-					-- for lsp_config or typescript-tools
-					ts_ls = {
-						extra_info_hl = "@comment",
-					},
-					vtsls = {
-						extra_info_hl = "@comment",
-					},
-					["rust-analyzer"] = {
-						-- Such as (as Iterator), (use std::io).
-						extra_info_hl = "@comment",
-					},
-					clangd = {
-						-- Such as "From <stdio.h>".
-						extra_info_hl = "@comment",
-					},
-					roslyn = {
-						extra_info_hl = "@comment",
-					},
-					basedpyright = {
-						-- It is usually import path such as "os"
-						extra_info_hl = "@comment",
-					},
-
-					-- If true, try to highlight "not supported" languages.
-					fallback = true,
-				},
-				-- If the built-in logic fails to find a suitable highlight group,
-				-- this highlight is applied to the label.
-				fallback_highlight = "@variable",
-				-- If provided, the plugin truncates the final displayed text to
-				-- this width (measured in display cells). Any highlights that extend
-				-- beyond the truncation point are ignored. Default 60.
-				max_width = 60,
-			})
-		end,
 	},
 	{
 		"danymat/neogen",

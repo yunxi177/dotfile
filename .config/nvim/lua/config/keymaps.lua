@@ -5,12 +5,7 @@
 local keymap = vim.keymap
 local opts = { noremap = true, silent = true }
 
-keymap.set(
-	"n",
-	"<leader>oa",
-	":AiderOpen --no-auto-commits --model openrouter/meta-llama/llama-3-8b-instruct:free<CR>",
-	{ noremap = true, silent = true }
-)
+keymap.set("n", "<leader>oa", ":AiderOpen --no-auto-commits --deepseek<CR>", { noremap = true, silent = true })
 -- keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true, silent = true })
 -- 生成注释
 keymap.set("n", "<Leader>nf", ":lua require('neogen').generate()<CR>", opts)
