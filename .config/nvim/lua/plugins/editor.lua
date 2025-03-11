@@ -75,28 +75,28 @@ return {
 				},
 				["<C-j>"] = { "select_next", "fallback" },
 				["<CR>"] = { "select_and_accept", "fallback" },
-				["<tab>"] = {
-					"snippet_forward",
-					function(cmp)
-						local neogen = require("neogen")
-						if neogen.jumpable() then
-							neogen.jump_next()
-						end -- runs the next command
-						return true --doesn't run the next command
-					end,
-					"fallback",
-				},
-				["<S-tab>"] = {
-					"snippet_backward",
-					function(cmp)
-						local neogen = require("neogen")
-						if neogen.jumpable() then
-							neogen.jump_prev()
-						end -- runs the next command
-						return true --doesn't run the next command
-					end,
-					"fallback",
-				},
+				-- ["<tab>"] = {
+				-- 	"snippet_forward",
+				-- 	function(cmp)
+				-- 		local neogen = require("neogen")
+				-- 		if neogen.jumpable() then
+				-- 			neogen.jump_next()
+				-- 		end -- runs the next command
+				-- 		return true --doesn't run the next command
+				-- 	end,
+				-- 	"fallback",
+				-- },
+				-- ["<S-tab>"] = {
+				-- 	"snippet_backward",
+				-- 	function(cmp)
+				-- 		local neogen = require("neogen")
+				-- 		if neogen.jumpable() then
+				-- 			neogen.jump_prev()
+				-- 		end -- runs the next command
+				-- 		return true --doesn't run the next command
+				-- 	end,
+				-- 	"fallback",
+				-- },
 			},
 			snippets = {
 				preset = "luasnip",
