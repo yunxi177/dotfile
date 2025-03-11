@@ -20924,3 +20924,7 @@ window#waybar.background.top.empty.eDP-1.bar.mode-dock:dir(ltr)
 [2025-03-11 14:55:22.125] [debug] hyprland IPC received windowtitlev2>>5c70b0c6e350,lg ~/p/m/d/.config
 [2025-03-11 14:55:22.126] [debug] hyprland IPC received activewindow>>com.mitchellh.ghostty,lg ~/p/m/d/.config
 [2025-03-11 14:55:22.128] [debug] hyprland IPC received activewindowv2>>5c70b0c6e350
+[2025-03-11 14:55:28.047] [debug] mpd: Failed to connect to MPD: Connection refused
+[2025-03-11 14:55:28.048] [debug] mpd: Failed to connect to MPD: Connection refused
+[2025-03-11 14:55:38.046] [debug] mpd: Failed to connect to MPD: Connection refused
+[2025-03-11 14:55:38.047] [debug] mpd: Failed to connect to MPD: Connection refused
