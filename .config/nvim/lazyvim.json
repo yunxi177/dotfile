@@ -1,6 +1,5 @@
 {
   "extras": [
-    "lazyvim.plugins.extras.ai.copilot-chat",
     "lazyvim.plugins.extras.coding.mini-comment",
     "lazyvim.plugins.extras.coding.neogen",
     "lazyvim.plugins.extras.lang.go",
@@ -9,7 +8,7 @@
   "install_version": 7,
   "news": {
     "NEWS.md": "10960",
-    "doc/news.txt": "24450"
+    "doc/news.txt": "24170"
   },
   "version": 8
 }

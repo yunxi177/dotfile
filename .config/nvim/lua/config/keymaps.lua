@@ -29,6 +29,13 @@ keymap.set("n", "<Leader>d", '"_d')
 keymap.set("n", "<Leader>D", '"_D')
 keymap.set("v", "<Leader>d", '"_d')
 keymap.set("v", "<Leader>D", '"_D')
+keymap.set("i", "<Esc>", function()
+	local luasnip = require("luasnip")
+	if luasnip.in_snippet() then
+		luasnip.unlink_current()
+	end
+	return "<Esc>"
+end, { expr = true, noremap = true, silent = true, desc = "清除片段上下文" })
 
 -- local ls = require("luasnip")
 -- keymap.set({ "i" }, "<C-E>", function()

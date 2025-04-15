@@ -34,11 +34,13 @@ ls.add_snippets("go", {
 	s("iferr500", {
 		t({ "if err != nil {" }),
 		t({ "", "\thttpresponse.Error(c, http.StatusInternalServerError, err.Error(), httpresponse.ERROR_CODE_FAIL)" }),
+		t({ "", "\treturn" }),
 		t({ "", "}" }),
 	}),
 	s("iferr400", {
 		t({ "if err != nil {" }),
 		t({ "", "\thttpresponse.Error(c, http.StatusBadRequest, err.Error(), httpresponse.ERROR_CODE_FAIL)" }),
+		t({ "", "\treturn" }),
 		t({ "", "}" }),
 	}),
 	s("genstruct", {
@@ -60,7 +62,7 @@ ls.add_snippets("go", {
 		t({ "", "}" }),
 	}),
 	s("genaction", {
-		t({ "func (h *" }),
+		t({ "func (ctl *" }),
 		i(1),
 		t({ ") " }),
 		i(2),

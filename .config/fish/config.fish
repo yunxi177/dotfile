@@ -27,10 +27,11 @@ if status is-interactive
     alias ls="eza --icons=always"
 end
 
-
 # pnpm
 set -gx PNPM_HOME "/home/yunxi/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
     set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
+set -Ux GTK_THEME Adwaita:dark
+set -Ux GTK_APPLICATION_PREFER_DARK_THEME 1

@@ -2,16 +2,37 @@ return {
 	{
 		"folke/flash.nvim",
 		event = "VeryLazy",
+		enabled = true,
 		---@type Flash.Config
-		opts = {},
-  -- stylua: ignore
-  keys = {
-    { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-    { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-    { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-    { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-    { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
-  },
+		opts = {
+			modes = {
+				visual = { enabled = false },
+				char = {
+					enabled = false, -- 禁用所有字符跳转（包括 `f/F/t/T/y`）
+				},
+				search = {
+					enabled = false, -- 禁用 `/` 和 `?` 搜索
+				},
+			},
+		},
+        -- stylua: ignore
+        keys = {
+            { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+            -- { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+            { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+            { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+            -- { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+        },
+	},
+	{
+		"kylechui/nvim-surround",
+		version = "^3.0.0", -- Use for stability; omit to use `main` branch for the latest features
+		event = "VeryLazy",
+		config = function()
+			require("nvim-surround").setup({
+				-- Configuration here, or leave empty to use defaults
+			})
+		end,
 	},
 	{
 		"echasnovski/mini.hipatterns",
@@ -51,6 +72,7 @@ return {
 			"saghen/blink.compat",
 			{ "L3MON4D3/LuaSnip", version = "v2.*" },
 			"xzbdmw/colorful-menu.nvim",
+			"Kaiser-Yang/blink-cmp-avante",
 		},
 
 		-- use a release tag to download pre-built binaries
@@ -73,45 +95,19 @@ return {
 					"select_prev",
 					"fallback",
 				},
-				["<C-j>"] = { "select_next", "fallback" },
+				["<C-j>"] = { "select_next", "snippet_forward", "fallback" },
 				["<CR>"] = { "select_and_accept", "fallback" },
-				-- ["<tab>"] = {
-				-- 	"snippet_forward",
-				-- 	function(cmp)
-				-- 		local neogen = require("neogen")
-				-- 		if neogen.jumpable() then
-				-- 			neogen.jump_next()
-				-- 		end -- runs the next command
-				-- 		return true --doesn't run the next command
-				-- 	end,
-				-- 	"fallback",
-				-- },
-				-- ["<S-tab>"] = {
-				-- 	"snippet_backward",
-				-- 	function(cmp)
-				-- 		local neogen = require("neogen")
-				-- 		if neogen.jumpable() then
-				-- 			neogen.jump_prev()
-				-- 		end -- runs the next command
-				-- 		return true --doesn't run the next command
-				-- 	end,
-				-- 	"fallback",
-				-- },
+				["<tab>"] = {
+					"snippet_forward",
+					"fallback",
+				},
+				["<S-tab>"] = {
+					"snippet_backward",
+					"fallback",
+				},
 			},
 			snippets = {
 				preset = "luasnip",
-				expand = function(snippet)
-					require("luasnip").lsp_expand(snippet)
-				end,
-				active = function(filter)
-					if filter and filter.direction then
-						return require("luasnip").jumpable(filter.direction)
-					end
-					return require("luasnip").in_snippet()
-				end,
-				jump = function(direction)
-					require("luasnip").jump(direction)
-				end,
 			},
 
 			appearance = {
@@ -134,14 +130,22 @@ return {
 			-- elsewhere in your config, without redefining it, via `opts_extend`
 			sources = {
 				compat = { "codeium" },
-				default = { "lsp", "path", "snippets", "buffer", "codeium" },
+				default = { "lsp", "path", "snippets", "buffer", "codeium", "avante" },
 				providers = {
 					codeium = {
 						kind = "Codeium",
 						score_offset = 100,
 						async = true,
 					},
+					avante = {
+						module = "blink-cmp-avante",
+						name = "Avante",
+						opts = {
+							-- options for blink-cmp-avante
+						},
+					},
 				},
+
 				-- optionally disable cmdline completions
 				-- cmdline = {},
 			},

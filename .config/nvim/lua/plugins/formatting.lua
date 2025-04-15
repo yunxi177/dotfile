@@ -22,6 +22,7 @@ return {
 					php = { "php-cs-fixer" },
 					blade = { "blade-formatter", "rustywind" },
 					python = { "black" },
+					go = { "goimports", "gofmt" },
 					javascript = { "prettierd" },
 					-- rust = { "rustfmt" },
 				},
