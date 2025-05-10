@@ -23,7 +23,11 @@ return {
 					blade = { "blade-formatter", "rustywind" },
 					python = { "black" },
 					go = { "goimports", "gofmt" },
-					javascript = { "prettierd" },
+					javascript = { "eslint" },
+					typescript = { "eslint" },
+					javascriptreact = { "eslint" },
+					typescriptreact = { "eslint" },
+					vue = { "eslint" },
 					-- rust = { "rustfmt" },
 				},
 				-- LazyVim will merge the options you set here with builtin formatters.
@@ -42,6 +46,20 @@ return {
 					-- shfmt = {
 					--   extra_args = { "-i", "2", "-ci" },
 					-- },
+					eslint_d = {
+						command = "eslint_d",
+						args = { "--fix", "--stdin", "--stdin-filename", "$FILENAME" },
+						stdin = true,
+						condition = function(ctx)
+							return vim.fs.find({
+								".eslintrc.js",
+								".eslintrc.cjs",
+								".eslintrc.json",
+								".eslintrc",
+								"package.json",
+							}, { upward = true, path = ctx.filename })[1] ~= nil
+						end,
+					},
 					pint = {
 						meta = {
 							url = "https://github.com/laravel/pint",

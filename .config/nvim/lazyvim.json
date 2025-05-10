@@ -2,8 +2,7 @@
   "extras": [
     "lazyvim.plugins.extras.coding.mini-comment",
     "lazyvim.plugins.extras.coding.neogen",
-    "lazyvim.plugins.extras.lang.go",
-    "lazyvim.plugins.extras.lsp.none-ls"
+    "lazyvim.plugins.extras.lang.go"
   ],
   "install_version": 7,
   "news": {
