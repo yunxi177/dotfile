@@ -10,8 +10,8 @@ return {
 			opts.servers = opts.servers or {}
 
 			local mason_registry = require("mason-registry")
-			local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
-				.. "/node_modules/@vue/language-server"
+			-- local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
+			-- 	.. "/node_modules/@vue/language-server"
 			-- -- volar 配置
 			opts.servers.volar = {
 				-- filetypes = { "vue", "javascript", "typescript", "javascriptreact", "typescriptreact" },
@@ -32,6 +32,36 @@ return {
 							location = "/home/yunxi/.local/share/pnpm/global/5/node_modules/@vue/typescript-plugin",
 							languages = { "vue", "javascript", "typescript" },
 						},
+					},
+				},
+			}
+			opts.servers.harper_ls = {
+				settings = {
+					["harper-ls"] = {
+						userDictPath = "",
+						fileDictPath = "",
+						linters = {
+							SpellCheck = true,
+							SpelledNumbers = false,
+							AnA = true,
+							SentenceCapitalization = true,
+							UnclosedQuotes = true,
+							WrongQuotes = false,
+							LongSentences = true,
+							RepeatedWords = true,
+							Spaces = true,
+							Matcher = true,
+							CorrectNumberSuffix = true,
+						},
+						codeActions = {
+							ForceStable = false,
+						},
+						markdown = {
+							IgnoreLinkTitle = false,
+						},
+						diagnosticSeverity = "hint",
+						isolateEnglish = false,
+						dialect = "American",
 					},
 				},
 			}

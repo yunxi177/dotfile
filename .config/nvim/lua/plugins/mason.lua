@@ -1,6 +1,7 @@
 return {
 	{
 		"williamboman/mason.nvim",
+		commit = "4da89f3",
 		opts = {
 			ensure_installed = {
 				"actionlint",
@@ -150,4 +151,5 @@ return {
 			},
 		})
 	end,
+	{ "williamboman/mason-lspconfig.nvim", commit = "1a31f82" },
 }

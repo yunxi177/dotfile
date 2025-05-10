@@ -35,3 +35,7 @@ end
 # pnpm end
 set -Ux GTK_THEME Adwaita:dark
 set -Ux GTK_APPLICATION_PREFER_DARK_THEME 1
+set -Ux XDG_CURRENT_DESKTOP Hyprland
+set -Ux OZONE_PLATFORM wayland
+set -Ux ELECTRON_OZONE_PLATFORM_HINT wayland
+set -Ux MOZ_ENABLE_WAYLAND 1

@@ -68,10 +68,11 @@ return {
 		"saghen/blink.cmp",
 		-- optional: provides snippets for the snippet source
 		dependencies = {
-			"codeium.nvim",
+			-- "codeium.nvim",
 			"saghen/blink.compat",
 			{ "L3MON4D3/LuaSnip", version = "v2.*" },
 			"xzbdmw/colorful-menu.nvim",
+			{ "luozhiya/fittencode.nvim" },
 			"Kaiser-Yang/blink-cmp-avante",
 		},
 
@@ -129,21 +130,25 @@ return {
 			-- default list of enabled providers defined so that you can extend it
 			-- elsewhere in your config, without redefining it, via `opts_extend`
 			sources = {
-				compat = { "codeium" },
-				default = { "lsp", "path", "snippets", "buffer", "codeium", "avante" },
+				-- compat = { "codeium" },
+				default = { "lsp", "path", "snippets", "buffer" },
 				providers = {
-					codeium = {
-						kind = "Codeium",
-						score_offset = 100,
-						async = true,
-					},
-					avante = {
-						module = "blink-cmp-avante",
-						name = "Avante",
-						opts = {
-							-- options for blink-cmp-avante
-						},
-					},
+					-- fittencode = {
+					-- 	name = "fittencode",
+					-- 	module = "fittencode.sources.blink",
+					-- },
+					-- codeium = {
+					-- 	kind = "Codeium",
+					-- 	score_offset = 100,
+					-- 	async = true,
+					-- },
+					-- avante = {
+					-- 	module = "blink-cmp-avante",
+					-- 	name = "Avante",
+					-- 	opts = {
+					-- 		-- options for blink-cmp-avante
+					-- 	},
+					-- },
 				},
 
 				-- optionally disable cmdline completions
@@ -251,18 +256,18 @@ return {
 			-- end)
 		end,
 	},
-	{
-		"Exafunction/codeium.nvim",
-		opts = function()
-			LazyVim.cmp.actions.ai_accept = function()
-				if require("codeium.virtual_text").get_current_completion_item() then
-					LazyVim.create_undo()
-					vim.api.nvim_input(require("codeium.virtual_text").accept())
-					return true
-				end
-			end
-		end,
-	},
+	-- {
+	-- 	"Exafunction/codeium.nvim",
+	-- 	opts = function()
+	-- 		LazyVim.cmp.actions.ai_accept = function()
+	-- 			if require("codeium.virtual_text").get_current_completion_item() then
+	-- 				LazyVim.create_undo()
+	-- 				vim.api.nvim_input(require("codeium.virtual_text").accept())
+	-- 				return true
+	-- 			end
+	-- 		end
+	-- 	end,
+	-- },
 	{ "rhysd/git-messenger.vim" },
 	{ "echasnovski/mini.comment", version = "*" },
 	{ "kevinhwang91/nvim-ufo" },

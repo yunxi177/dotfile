@@ -21,22 +21,129 @@ return {
 		config = true,
 	},
 
+	{
+		"HiPhish/rainbow-delimiters.nvim",
+		event = "BufReadPost", -- 或其他适合的触发事件
+		config = function()
+			-- 在这里添加插件的配置
+		end,
+	},
 	-- Refactoring tool
 	{
 		"ThePrimeagen/refactoring.nvim",
+		event = { "BufReadPre", "BufNewFile" },
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-treesitter/nvim-treesitter",
+		},
 		keys = {
+			{ "<leader>r", "", desc = "+refactor", mode = { "n", "v" } },
 			{
-				"<leader>r",
+				"<leader>rg",
+				pick,
+				mode = "v",
+				desc = "Refactor",
+			},
+			{
+				"<leader>ri",
 				function()
-					require("refactoring").select_refactor({})
+					require("refactoring").refactor("Inline Variable")
+				end,
+				mode = { "n", "v" },
+				desc = "Inline Variable",
+			},
+			{
+				"<leader>rb",
+				function()
+					require("refactoring").refactor("Extract Block")
+				end,
+				desc = "Extract Block",
+			},
+			{
+				"<leader>rf",
+				function()
+					require("refactoring").refactor("Extract Block To File")
+				end,
+				desc = "Extract Block To File",
+			},
+			{
+				"<leader>rP",
+				function()
+					require("refactoring").debug.printf({ below = false })
+				end,
+				desc = "Debug Print",
+			},
+			{
+				"<leader>rp",
+				function()
+					require("refactoring").debug.print_var({ normal = true })
+				end,
+				desc = "Debug Print Variable",
+			},
+			{
+				"<leader>rc",
+				function()
+					require("refactoring").debug.cleanup({})
+				end,
+				desc = "Debug Cleanup",
+			},
+			{
+				"<leader>rf",
+				function()
+					require("refactoring").refactor("Extract Function")
 				end,
 				mode = "v",
-				noremap = true,
-				silent = true,
-				expr = false,
+				desc = "Extract Function",
+			},
+			{
+				"<leader>rF",
+				function()
+					require("refactoring").refactor("Extract Function To File")
+				end,
+				mode = "v",
+				desc = "Extract Function To File",
+			},
+			{
+				"<leader>rx",
+				function()
+					require("refactoring").refactor("Extract Variable")
+				end,
+				mode = "v",
+				desc = "Extract Variable",
+			},
+			{
+				"<leader>rp",
+				function()
+					require("refactoring").debug.print_var()
+				end,
+				mode = "v",
+				desc = "Debug Print Variable",
 			},
 		},
-		opts = {},
+		opts = {
+			prompt_func_return_type = {
+				go = false,
+				java = false,
+				cpp = false,
+				c = false,
+				h = false,
+				hpp = false,
+				cxx = false,
+			},
+			prompt_func_param_type = {
+				go = false,
+				java = false,
+				cpp = false,
+				c = false,
+				h = false,
+				hpp = false,
+				cxx = false,
+			},
+			printf_statements = {},
+			print_var_statements = {},
+			show_success_message = true, -- shows a message with information about the refactor on success
+			-- i.e. [Refactor] Inlined 3 variable occurrences
+		},
 	},
 
 	-- Go forward/backward with square brackets
@@ -82,7 +189,7 @@ return {
 		event = "VeryLazy",
 		version = false, -- Never set this value to "*"! Never!
 		opts = function(_, opts)
-			opts.provider = "openrouter"
+			opts.provider = "gemini"
 			opts.vendors = {
 				openrouter = {
 					__inherited_from = "openai",
@@ -97,6 +204,12 @@ return {
 					model = "deepseek-coder",
 					max_tokens = 4096,
 				},
+			}
+			opts.gemini = {
+				endpoint = "https://generativelanguage.googleapis.com/v1beta/models",
+				model = "gemini-2.5-pro-exp-03-25",
+				temperature = 0,
+				max_tokens = 4096,
 			}
 			opts.mappings = {
 				diff = {
@@ -168,5 +281,22 @@ return {
 		opts = function(_, opts)
 			require("luasnip.loaders.from_lua").lazy_load({ paths = "~/.config/nvim/lua/snippets" })
 		end,
+	},
+	{
+		"luozhiya/fittencode.nvim",
+		opts = {
+			-- completion_mode = "source",
+			-- source_completion = {
+			-- 	-- Enable source completion.
+			-- 	enable = true,
+			-- 	-- engine support nvim-cmp and blink.cmp
+			-- 	engine = "blink", -- "cmp" | "blink"
+			-- 	-- trigger characters for source completion.
+			-- 	-- Available options:
+			-- 	-- * A  list of characters like {'a', 'b', 'c', ...}
+			-- 	-- * A function that returns a list of characters like `function() return {'a', 'b', 'c', ...}`
+			-- 	trigger_chars = {},
+			-- },
+		},
 	},
 }
