@@ -3,26 +3,61 @@ return {
 		"folke/flash.nvim",
 		event = "VeryLazy",
 		enabled = true,
-		---@type Flash.Config
+        -- stylua: ignore
 		opts = {
 			modes = {
-				visual = { enabled = false },
 				char = {
 					enabled = false, -- 禁用所有字符跳转（包括 `f/F/t/T/y`）
+                    keys = {}
 				},
 				search = {
 					enabled = false, -- 禁用 `/` 和 `?` 搜索
 				},
+
 			},
 		},
-        -- stylua: ignore
-        keys = {
-            { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-            -- { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-            { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-            { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-            -- { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
-        },
+		keys = {
+			{
+				"s",
+				mode = { "n", "x", "o" },
+				function()
+					require("flash").jump()
+				end,
+				desc = "Flash",
+			},
+			{
+				"S",
+				mode = { "x" },
+				function()
+					require("flash").treesitter()
+				end,
+				desc = "Flash Treesitter",
+			},
+			{
+				"r",
+				mode = "o",
+				function()
+					require("flash").remote()
+				end,
+				desc = "Remote Flash",
+			},
+			{
+				"R",
+				mode = { "o", "x" },
+				function()
+					require("flash").treesitter_search()
+				end,
+				desc = "Treesitter Search",
+			},
+			{
+				"<c-s>",
+				mode = { "c" },
+				function()
+					require("flash").toggle()
+				end,
+				desc = "Toggle Flash Search",
+			},
+		},
 	},
 	{
 		"kylechui/nvim-surround",
@@ -124,7 +159,7 @@ return {
 				list = {
 					selection = { preselect = true, auto_insert = false },
 				},
-				ghost_text = { enabled = true },
+				ghost_text = { enabled = false },
 			},
 
 			-- default list of enabled providers defined so that you can extend it

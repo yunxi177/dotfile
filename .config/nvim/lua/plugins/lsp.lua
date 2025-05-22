@@ -1,3 +1,4 @@
+local lspconfig = require("lspconfig")
 return {
 	{
 		"neovim/nvim-lspconfig",
@@ -8,7 +9,6 @@ return {
 		opts = function(_, opts)
 			-- 保留现有的 servers 配置
 			opts.servers = opts.servers or {}
-
 			local mason_registry = require("mason-registry")
 			-- local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
 			-- 	.. "/node_modules/@vue/language-server"
@@ -209,59 +209,31 @@ return {
 					},
 				},
 			}
-			-- intelephense 配置
-			opts.servers.intelephense = {
-				filetypes = { "php", "blade", "php_only" },
-				cmd = {
-					"/home/yunxi/.local/share/pnpm/global/5/node_modules/intelephense/lib/intelephense.js",
-					"--stdio",
-				}, -- 指定执行程序路径
-				settings = {
-					intelephense = {
-						filetypes = { "php", "blade", "php_only" },
-						files = {
-							associations = { "*.php", "*.blade.php" }, -- Associating .blade.php files as well
-							maxSize = 5000000,
-						},
-					},
+			opts.servers.phpactor = {
+				cmd = { "phpactor", "language-server" },
+				filetypes = { "php" },
+				root_dir = lspconfig.util.root_pattern(".git", ".phpactor.json", ".phpactor.yml"),
+				init_options = {
+					["completion_worse.completor.docblock.enabled"] = false,
 				},
 			}
+			-- intelephense 配置
+			-- opts.servers.intelephense = {
+			-- 	filetypes = { "php", "blade", "php_only" },
+			-- 	cmd = {
+			-- 		"/home/yunxi/.local/share/pnpm/global/5/node_modules/intelephense/lib/intelephense.js",
+			-- 		"--stdio",
+			-- 	}, -- 指定执行程序路径
+			-- 	settings = {
+			-- 		intelephense = {
+			-- 			filetypes = { "php", "blade", "php_only" },
+			-- 			files = {
+			-- 				associations = { "*.php", "*.blade.php" }, -- Associating .blade.php files as well
+			-- 				maxSize = 5000000,
+			-- 			},
+			-- 		},
+			-- 	},
+			-- }
 		end,
-	},
-	{
-		"williamboman/mason.nvim",
-		opts = {
-			ensure_installed = {
-				"actionlint",
-				"ansible-language-server",
-				"ansible-lint",
-				"antlers-language-server",
-				"black",
-				"bash-language-server",
-				"blade-formatter",
-				"docker-compose-language-service",
-				"dockerfile-language-server",
-				"dot-language-server",
-				"emmet-ls",
-				"eslint_d",
-				"flake8",
-				"hadolint",
-				"html-lsp",
-				"intelephense",
-				"php-debug-adapter",
-				"phpcs",
-				"php-cs-fixer",
-				"vue-language-server",
-				"pint",
-				"prettierd",
-				"pyright",
-				"rustywind",
-				"shellcheck",
-				"shfmt",
-				"stylua",
-				"tailwindcss-language-server",
-				"typescript-language-server",
-			},
-		},
 	},
 }
