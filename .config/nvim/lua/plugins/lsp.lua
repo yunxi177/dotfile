@@ -214,7 +214,7 @@ return {
 				filetypes = { "php" },
 				root_dir = lspconfig.util.root_pattern(".git", ".phpactor.json", ".phpactor.yml"),
 				init_options = {
-					["completion_worse.completor.docblock.enabled"] = false,
+					-- ["completion_worse.completor.docblock.enabled"] = false,
 				},
 			}
 			-- intelephense 配置
