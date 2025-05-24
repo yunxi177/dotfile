@@ -21,6 +21,13 @@ return {
 				-- 	},
 				-- },
 			}
+			opts.setup = {
+				phpactor = function(_, opts)
+					vim.lsp.handlers["$/progress"] = function(...) end
+					require("lspconfig").phpactor.setup(opts)
+					return true
+				end,
+			}
 			-- -- ts 配置
 			opts.servers.ts_ls = {
 				filetypes = { "javascript", "typescript", "vue" },

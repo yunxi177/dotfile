@@ -10,8 +10,7 @@ keymap.set("n", "<leader>oa", ":AiderOpen --no-auto-commits --deepseek<CR>", { n
 -- 生成注释
 keymap.set("n", "<Leader>nf", ":lua require('neogen').generate()<CR>", opts)
 keymap.set("n", "<Leader>nc", ":lua require('neogen').generate({ type = 'class' })<CR>", opts)
-keymap.set("i", "<C-l>", ":lua require('neogen').jump_next<CR>", opts)
-keymap.set("i", "<C-h>", ":lua require('neogen').jump_prev<CR>", opts)
+keymap.set("n", "<Leader>nt", ":lua require('neogen').generate({ type = 'type' })<CR>", opts)
 -- 关闭所有 buffer
 keymap.set("n", "<C-q>", ":q<CR>", { noremap = true, silent = true })
 keymap.set("n", "L", "g_", opts)
